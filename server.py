@@ -2,6 +2,7 @@ from typing import List, Literal, Optional, Dict, Any
 
 from fastapi import FastAPI, Header, HTTPException, UploadFile, File, Form
 from fastapi.responses import StreamingResponse, Response
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from api import set_token
@@ -41,6 +42,15 @@ class TTSRequest(BaseModel):
 
 
 app = FastAPI(title="LumiDrive Assistant API")
+
+# Add CORS middleware to allow frontend requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with specific frontend URL
+    allow_credentials=False,  # We use Bearer tokens, not cookies
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def _set_backend_token(authorization: Optional[str]) -> str:
